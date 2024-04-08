@@ -1,5 +1,5 @@
 # Spring Boot Examples
-The Spring Boot Examples repository is dedicated to unit testing Java code. This project emphasizes the importance of robust unit testing practices within a Spring framework environment. Here, we focus solely on the unit testing aspect of the application.
+The Spring Boot Examples is a github repository serves as a sample project designed to illustrate the process of using RoostGPT (an AI-powered tool) which streamlines the mechanism of creating test cases, enabling developers to improve code quality and accelerate development workflows.
 
 ## Overview
 The Spring Boot Examples demonstrates the significance of thorough unit testing in Java projects, particularly within the Spring framework. By prioritizing unit tests, this project aims to ensure the reliability and correctness of the implemented functionalities.
@@ -28,13 +28,11 @@ To run Maven tests for the Spring Boot Examples project, follow these steps:
    ```bash
    cd spring-boot-examples
    ```
-
 3. **Run the unit tests:**
 
    ```bash
    mvn test
    ```
-
    This command executes all unit tests defined within the project, providing feedback on test results and code coverage.
 
 4. **(Optional) Run Specific Tests:**  
@@ -55,6 +53,9 @@ To run Maven tests for the Spring Boot Examples project, follow these steps:
      ```
 
      Replace `testMethodName` with the name of the test method you want to run.
+     
+#### . Review Test Results: 
+After running the tests, review the output in the terminal. Maven will display information about the tests executed, including any failures or errors encountered.
 
 ## Contact
 For more information about RoostGPT or our other products and services, please visit our website at [roost.ai](https://roost.ai) or contact us at [support@roost.ai](mailto:support@roost.ai).
