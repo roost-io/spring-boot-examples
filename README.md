@@ -1,6 +1,4 @@
 # Spring Boot Examples
-=========================
-
 The Spring Boot Examples is a github repository serves as a sample project designed to illustrate the process of using RoostGPT (an AI-powered tool) which streamlines the mechanism of creating test cases, enabling developers to improve code quality and accelerate development workflows.
 
 ## Overview
