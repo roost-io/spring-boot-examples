@@ -54,7 +54,7 @@ To run Maven tests for the Spring Boot Examples project, follow these steps:
 
      Replace `testMethodName` with the name of the test method you want to run.
 
-#### . Review Test Results: 
+#### Review Test Results: 
 After running the tests, review the output in the terminal. Maven will display information about the tests executed, including any failures or errors encountered.
 
 ## Contact
