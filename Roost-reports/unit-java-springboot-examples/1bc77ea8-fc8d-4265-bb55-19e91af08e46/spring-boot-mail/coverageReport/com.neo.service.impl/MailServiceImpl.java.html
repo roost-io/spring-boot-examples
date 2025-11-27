@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MailServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">spring-boot-mail</a> &gt; <a href="index.source.html" class="el_package">com.neo.service.impl</a> &gt; <span class="el_source">MailServiceImpl.java</span></div><h1>MailServiceImpl.java</h1><pre class="source lang-java linenums">package com.neo.service.impl;
+
+import com.neo.service.MailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import java.io.File;
+
+/**
+ * Created by summer on 2017/5/4.
+ */
+@Component
+<span class="fc" id="L22">public class MailServiceImpl implements MailService {</span>
+
+<span class="fc" id="L24">	private final Logger logger = LoggerFactory.getLogger(this.getClass());</span>
+
+	@Autowired
+	private JavaMailSender mailSender;
+
+	@Value(&quot;${mail.fromMail.addr}&quot;)
+	private String from;
+
+	/**
+	 * 发送文本邮件
+	 * @param to
+	 * @param subject
+	 * @param content
+	 */
+	@Override
+	public void sendSimpleMail(String to, String subject, String content) {
+<span class="nc" id="L40">		SimpleMailMessage message = new SimpleMailMessage();</span>
+<span class="nc" id="L41">		message.setFrom(from);</span>
+<span class="nc" id="L42">		message.setTo(to);</span>
+<span class="nc" id="L43">		message.setSubject(subject);</span>
+<span class="nc" id="L44">		message.setText(content);</span>
+
+		try {
+<span class="nc" id="L47">			mailSender.send(message);</span>
+<span class="nc" id="L48">			logger.info(&quot;简单邮件已经发送。&quot;);</span>
+		}
+<span class="nc" id="L50">		catch (Exception e) {</span>
+<span class="nc" id="L51">			logger.error(&quot;发送简单邮件时发生异常！&quot;, e);</span>
+<span class="nc" id="L52">		}</span>
+
+<span class="nc" id="L54">	}</span>
+
+	/**
+	 * 发送html邮件
+	 * @param to
+	 * @param subject
+	 * @param content
+	 */
+	@Override
+	public void sendHtmlMail(String to, String subject, String content) {
+<span class="nc" id="L64">		MimeMessage message = mailSender.createMimeMessage();</span>
+
+		try {
+			// true表示需要创建一个multipart message
+<span class="nc" id="L68">			MimeMessageHelper helper = new MimeMessageHelper(message, true);</span>
+<span class="nc" id="L69">			helper.setFrom(from);</span>
+<span class="nc" id="L70">			helper.setTo(to);</span>
+<span class="nc" id="L71">			helper.setSubject(subject);</span>
+<span class="nc" id="L72">			helper.setText(content, true);</span>
+
+<span class="nc" id="L74">			mailSender.send(message);</span>
+<span class="nc" id="L75">			logger.info(&quot;html邮件发送成功&quot;);</span>
+		}
+<span class="nc" id="L77">		catch (MessagingException e) {</span>
+<span class="nc" id="L78">			logger.error(&quot;发送html邮件时发生异常！&quot;, e);</span>
+<span class="nc" id="L79">		}</span>
+<span class="nc" id="L80">	}</span>
+
+	/**
+	 * 发送带附件的邮件
+	 * @param to
+	 * @param subject
+	 * @param content
+	 * @param filePath
+	 */
+	@Override
+	public void sendAttachmentsMail(String to, String subject, String content, String filePath) {
+<span class="fc" id="L91">		MimeMessage message = mailSender.createMimeMessage();</span>
+
+		try {
+<span class="fc" id="L94">			MimeMessageHelper helper = new MimeMessageHelper(message, true);</span>
+<span class="fc" id="L95">			helper.setFrom(from);</span>
+<span class="fc" id="L96">			helper.setTo(to);</span>
+<span class="fc" id="L97">			helper.setSubject(subject);</span>
+<span class="fc" id="L98">			helper.setText(content, true);</span>
+
+<span class="fc" id="L100">			FileSystemResource file = new FileSystemResource(new File(filePath));</span>
+<span class="fc" id="L101">			String fileName = filePath.substring(filePath.lastIndexOf(File.separator));</span>
+<span class="fc" id="L102">			helper.addAttachment(fileName, file);</span>
+			// helper.addAttachment(&quot;test&quot;+fileName, file);
+
+<span class="fc" id="L105">			mailSender.send(message);</span>
+<span class="fc" id="L106">			logger.info(&quot;带附件的邮件已经发送。&quot;);</span>
+		}
+<span class="fc" id="L108">		catch (MessagingException e) {</span>
+<span class="fc" id="L109">			logger.error(&quot;发送带附件的邮件时发生异常！&quot;, e);</span>
+<span class="fc" id="L110">		}</span>
+<span class="fc" id="L111">	}</span>
+
+	/**
+	 * 发送正文中有静态资源（图片）的邮件
+	 * @param to
+	 * @param subject
+	 * @param content
+	 * @param rscPath
+	 * @param rscId
+	 */
+	@Override
+	public void sendInlineResourceMail(String to, String subject, String content, String rscPath, String rscId) {
+<span class="fc" id="L123">		MimeMessage message = mailSender.createMimeMessage();</span>
+
+		try {
+<span class="fc" id="L126">			MimeMessageHelper helper = new MimeMessageHelper(message, true);</span>
+<span class="fc" id="L127">			helper.setFrom(from);</span>
+<span class="fc" id="L128">			helper.setTo(to);</span>
+<span class="fc" id="L129">			helper.setSubject(subject);</span>
+<span class="fc" id="L130">			helper.setText(content, true);</span>
+
+<span class="fc" id="L132">			FileSystemResource res = new FileSystemResource(new File(rscPath));</span>
+<span class="fc" id="L133">			helper.addInline(rscId, res);</span>
+
+<span class="fc" id="L135">			mailSender.send(message);</span>
+<span class="fc" id="L136">			logger.info(&quot;嵌入静态资源的邮件已经发送。&quot;);</span>
+		}
+<span class="fc" id="L138">		catch (MessagingException e) {</span>
+<span class="fc" id="L139">			logger.error(&quot;发送嵌入静态资源的邮件时发生异常！&quot;, e);</span>
+<span class="fc" id="L140">		}</span>
+<span class="fc" id="L141">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
